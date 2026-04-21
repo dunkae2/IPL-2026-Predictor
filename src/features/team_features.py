@@ -40,6 +40,35 @@ def compute_team_win_rate(df: pd.DataFrame, n: int = 10):
         df.loc[team2_match, "team2_rolling_win_rate"] = rolling_win_rate
 
     return df
+
+def record_elo(df: pd.DataFrame):
+    team_names = pd.unique(pd.concat([df["team1"], df["team2"]]))
+    team_dict = {team: 1500 for team in team_names}
+
+    df["team1_elo"] = None
+    df["team2_elo"] = None
+
+    df = df.sort_values("match_date").reset_index(drop=True)
+    
+    for idx, row in df.iterrows():
+        team1_elo = team_dict[row["team1"]]
+        team2_elo = team_dict[row["team2"]]
+
+        df.loc[idx, "team1_elo"] = team1_elo
+        df.loc[idx, "team2_elo"] = team2_elo
+
+        expected_a = 1 / (1 + 10 ** ((team2_elo - team1_elo) / 400))
+        expected_b = 1 - expected_a
+
+        actual_a = 1 if row["winner"] == row["team1"] else 0
+        actual_b = 1 - actual_a
+
+        K = 20
+        team_dict[row["team1"]] = team1_elo + K * (actual_a - expected_a)
+        team_dict[row["team2"]] = team2_elo + K * (actual_b - expected_b)
+    
+    return df
+
         
 
 
