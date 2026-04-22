@@ -47,7 +47,10 @@ def main():
         accuracies[i] = accuracy_score(y_test, predictions)
 
         print(f"{i}: {len(x_test)} matches")
-
+    
+    model_final = CatBoostClassifier(verbose=0)
+    model_final.fit(features_data[feature_cols], features_data[target_col])
+    model_final.save_model(str(Path(__file__).parent.parent.parent / "models" / "prematch_model.cbm"))
 
     for year, acc in accuracies.items():
         print(f"{year}: {acc:.3f}")

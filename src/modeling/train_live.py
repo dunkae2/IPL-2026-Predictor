@@ -25,7 +25,6 @@ def main():
 
     target_col = "target"
 
-    # need a date column to split - join match_date from match_info
     match_dates = match_info.set_index("match_number")["match_date"]
     live_data["match_date"] = live_data["ID"].map(match_dates)
 
@@ -40,6 +39,8 @@ def main():
     model = CatBoostClassifier(verbose=0)
     model.fit(x_train, y_train)
     predictions = model.predict(x_test)
+
+    model.save_model(str(Path(__file__).parent.parent.parent / "models" / "live_model.cbm"))
 
     print("Live model accuracy:", accuracy_score(y_test, predictions))
     print("Train size:", len(x_train))
