@@ -28,8 +28,8 @@ def main():
     match_dates = match_info.set_index("match_number")["match_date"]
     live_data["match_date"] = live_data["ID"].map(match_dates)
 
-    training_data = live_data[live_data["match_date"] < "2024-01-01"]
-    testing_data = live_data[live_data["match_date"] >= "2024-01-01"]
+    training_data = live_data[live_data["match_date"] < "2025-01-01"]
+    testing_data = live_data[live_data["match_date"] >= "2025-01-01"]
 
     x_train = training_data[feature_cols]
     y_train = training_data[target_col]

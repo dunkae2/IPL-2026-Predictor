@@ -28,16 +28,30 @@ def compute_team_win_rate(df: pd.DataFrame, n: int = 10):
     df["team1_rolling_win_rate"] = None
     df["team2_rolling_win_rate"] = None
 
+    current_season = df["match_date"].dt.year.max()
+
     for team in team_rows:
         chron_matches = df[(df["team1"] == team) | (df["team2"] == team)].sort_values("match_date")
-        wins = (chron_matches["winner"] == team).astype(int)
-        rolling_win_rate = wins.rolling(window=n, min_periods=1).mean().shift(1)
+        wins = (chron_matches["winner"] == team).astype(float)
+        weights = chron_matches["match_date"].dt.year.apply(lambda y: 3.0 if y == current_season else 1.0)
+        
+        weighted_win_rate = []
+        for i in range(len(chron_matches)):
+            start = max(0, i - n)
+            w = weights.iloc[start:i].values
+            v = wins.iloc[start:i].values
+            if len(v) == 0:
+                weighted_win_rate.append(np.nan)
+            else:
+                weighted_win_rate.append(np.average(v, weights=w))
+        
+        rolling = pd.Series(weighted_win_rate, index=chron_matches.index)
 
         team1_match = df["team1"] == team
-        df.loc[team1_match, "team1_rolling_win_rate"] = rolling_win_rate
+        df.loc[team1_match, "team1_rolling_win_rate"] = rolling[team1_match]
 
         team2_match = df["team2"] == team
-        df.loc[team2_match, "team2_rolling_win_rate"] = rolling_win_rate
+        df.loc[team2_match, "team2_rolling_win_rate"] = rolling[team2_match]
 
     return df
 
@@ -68,6 +82,8 @@ def record_elo(df: pd.DataFrame):
         team_dict[row["team2"]] = team2_elo + K * (actual_b - expected_b)
     
     return df
+
+
 
         
 

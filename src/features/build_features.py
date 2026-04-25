@@ -4,6 +4,8 @@ sys.path.append(str(Path(__file__).parent.parent))
 from data_loader import load_clean_data
 from team_features import compute_rest_days, compute_team_win_rate, record_elo
 from venue_features import compute_venue_win_rate, compute_first_innings_avg_score
+from player_features import compute_player_features
+
 
 def main():
     match_info_path = Path(__file__).parent.parent.parent / "data" / "processed" / "match_info_clean.csv"
@@ -16,6 +18,7 @@ def main():
     match_info = compute_venue_win_rate(match_info)
     match_info = record_elo(match_info)
     match_info = compute_first_innings_avg_score(match_info, ball_by_ball)
+    match_info = compute_player_features(match_info, ball_by_ball)
     
 
     output_path = Path(__file__).parent.parent.parent / "data" / "processed" / "match_features.csv"

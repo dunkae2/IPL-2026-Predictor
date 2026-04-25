@@ -17,7 +17,9 @@ def main():
     "teamA_rolling_win_rate", "teamB_rolling_win_rate",
     "teamA_venue_win_rate", "teamB_venue_win_rate",
     "venue_avg_first_innings_score",
-    "rest_days_diff", "rolling_win_rate_diff", "venue_win_rate_diff", "elo_diff"]
+    "rest_days_diff", "rolling_win_rate_diff", "venue_win_rate_diff", "elo_diff", "teamA_batting_strength", 
+    "teamB_batting_strength", "teamA_bowling_strength", 
+    "teamB_bowling_strength"]
     target_col = "target"
 
     for col in feature_cols:
@@ -25,12 +27,14 @@ def main():
             features_data[col] = features_data[col].fillna(0.5)
         elif "rest_days" in col:
             features_data[col] = features_data[col].fillna(3)
+        elif "strength" in col:
+            features_data[col] = features_data[col].fillna(features_data[col].median())
         else:
             features_data[col] = features_data[col].fillna(features_data[col].median())
 
     accuracies = {}
 
-    for i in range(2019, 2025, 1):
+    for i in range(2019, 2027, 1):
         training_data = features_data[(features_data["match_date"] < f"{i}-01-01") & (features_data["match_date"] > "2015-01-01")]
         testing_data = features_data[(features_data["match_date"] >= f"{i}-01-01") & (features_data["match_date"] < f"{i+1}-01-01")]
 

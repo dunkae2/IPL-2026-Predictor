@@ -36,8 +36,8 @@ def resolve_winner(df: pd.DataFrame):
     return df
 
 def parse_player_lists(df: pd.DataFrame):
-    df["team1_players"] = df["team1_players"].str.split(",").apply(lambda x: [name.strip() for name in x])
-    df["team2_players"] = df["team2_players"].str.split(",").apply(lambda x: [name.strip() for name in x])
+    df["team1_players"] = df["team1_players"].fillna("").str.split(",").apply(lambda x: [name.strip() for name in x if name.strip()])
+    df["team2_players"] = df["team2_players"].fillna("").str.split(",").apply(lambda x: [name.strip() for name in x if name.strip()])
 
     return df
 

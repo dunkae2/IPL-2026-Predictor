@@ -27,7 +27,13 @@ def random_assign_teams(df: pd.DataFrame):
     df["teamB_elo"] = np.where(random_list == 1, df["team2_elo"], df["team1_elo"])
     df["elo_diff"] = df["teamA_elo"] - df["teamB_elo"]
 
-    df = df.drop(columns=["team1_rest_days", "team2_rest_days", "team1_rolling_win_rate", "team2_rolling_win_rate", "team1_venue_win_rate", "team2_venue_win_rate", "team1_elo", "team2_elo"])
+    df["teamA_batting_strength"] = np.where(random_list == 1, df["team1_batting_strength"], df["team2_batting_strength"])
+    df["teamB_batting_strength"] = np.where(random_list == 1, df["team2_batting_strength"], df["team1_batting_strength"])
 
+    df["teamA_bowling_strength"] = np.where(random_list == 1, df["team1_bowling_strength"], df["team2_bowling_strength"])
+    df["teamB_bowling_strength"] = np.where(random_list == 1, df["team2_bowling_strength"], df["team1_bowling_strength"])
+
+    df = df.drop(columns=["team1_rest_days", "team2_rest_days", "team1_rolling_win_rate", "team2_rolling_win_rate", "team1_venue_win_rate", "team2_venue_win_rate", "team1_elo", "team2_elo", "team1_batting_strength", "team2_batting_strength", "team1_bowling_strength", "team2_bowling_strength"])
+    
     return df
 
