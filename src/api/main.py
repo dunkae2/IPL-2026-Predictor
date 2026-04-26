@@ -121,6 +121,7 @@ async def get_live_match(match_id: str):
         "matchEnded": match_data.get("matchEnded", False),
     }
 
+
 @app.get("/match/{match_id}/live_prediction")
 async def get_live_prediction(match_id: str):
     async with httpx.AsyncClient() as client:
@@ -155,15 +156,10 @@ async def get_live_prediction(match_id: str):
         batting_team = inn1.get("inning", "").replace(" Inning 1", "").replace(" Innings 1", "").strip()
         bowling_team = teams[1] if batting_team == teams[0] else teams[0]
 
-        # Estimate win probability from projected total vs venue average
-        # Simple heuristic: >180 projected = batting team 60-70%, <150 = 35-45%
         if overs_done < 1:
             batting_win_prob = 0.5
         else:
-            proj = projected_total
-            # Sigmoid-style mapping
-            batting_win_prob = max(0.15, min(0.85, 0.5 + (proj - 165) * 0.008))
-            # Wickets penalty
+            batting_win_prob = max(0.15, min(0.85, 0.5 + (projected_total - 165) * 0.008))
             batting_win_prob -= (wickets * 0.02)
             batting_win_prob = max(0.15, min(0.85, batting_win_prob))
 
@@ -238,6 +234,7 @@ async def get_live_prediction(match_id: str):
 
     return {"status": "not_live", "score": score}
 
+
 from pydantic import BaseModel
 
 class LiveMatchInput(BaseModel):
@@ -261,6 +258,7 @@ def predict_live(data: LiveMatchInput):
     prob = live_model.predict_proba(features)[0][1]
     return {"chasing_team_win_probability": round(float(prob), 4)}
 
+
 class PreMatchInput(BaseModel):
     team_a: str
     team_b: str
@@ -270,7 +268,7 @@ def predict_prematch(data: PreMatchInput):
     row_a = get_team_latest_features(data.team_a)
     row_b = get_team_latest_features(data.team_b)
 
-    def extract(row, team, prefix):
+    def extract(row, team):
         if row is None:
             return 3, 0.5, 0.5, 1500, 30.0, 8.0
         side = "team1" if row["team1"] == team else "team2"
@@ -283,8 +281,8 @@ def predict_prematch(data: PreMatchInput):
             row.get(f"{side}_bowling_strength", 8.0),
         )
 
-    a_rest, a_win_rate, a_venue, a_elo, a_bat, a_bowl = extract(row_a, data.team_a, "a")
-    b_rest, b_win_rate, b_venue, b_elo, b_bat, b_bowl = extract(row_b, data.team_b, "b")
+    a_rest, a_win_rate, a_venue, a_elo, a_bat, a_bowl = extract(row_a, data.team_a)
+    b_rest, b_win_rate, b_venue, b_elo, b_bat, b_bowl = extract(row_b, data.team_b)
     venue_avg = row_a["venue_avg_first_innings_score"] if row_a is not None else 162.0
 
     features = np.array([[

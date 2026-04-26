@@ -3,7 +3,7 @@ import pandas as pd
 
 def random_assign_teams(df: pd.DataFrame):
     np.random.seed(42)
-    random_list = np.random.randint(0, 2, size = len(df))
+    random_list = np.random.randint(0, 2, size=len(df))
 
     df["teamA"] = np.where(random_list == 1, df["team1"], df["team2"])
     df["teamB"] = np.where(random_list == 1, df["team2"], df["team1"])
@@ -33,7 +33,13 @@ def random_assign_teams(df: pd.DataFrame):
     df["teamA_bowling_strength"] = np.where(random_list == 1, df["team1_bowling_strength"], df["team2_bowling_strength"])
     df["teamB_bowling_strength"] = np.where(random_list == 1, df["team2_bowling_strength"], df["team1_bowling_strength"])
 
-    df = df.drop(columns=["team1_rest_days", "team2_rest_days", "team1_rolling_win_rate", "team2_rolling_win_rate", "team1_venue_win_rate", "team2_venue_win_rate", "team1_elo", "team2_elo", "team1_batting_strength", "team2_batting_strength", "team1_bowling_strength", "team2_bowling_strength"])
-    
-    return df
+    df = df.drop(columns=[
+        "team1_rest_days", "team2_rest_days",
+        "team1_rolling_win_rate", "team2_rolling_win_rate",
+        "team1_venue_win_rate", "team2_venue_win_rate",
+        "team1_elo", "team2_elo",
+        "team1_batting_strength", "team2_batting_strength",
+        "team1_bowling_strength", "team2_bowling_strength",
+    ])
 
+    return df

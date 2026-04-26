@@ -4,7 +4,6 @@
     <header class="header">
       <div class="header-left">
         <div class="logo-icon">
-          <!-- Cricket ball SVG -->
           <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="11" cy="11" r="10" fill="#c0392b" stroke="#922b21" stroke-width="0.5"/>
             <path d="M11 1 C11 1, 7 5, 7 11 C7 17, 11 21, 11 21" stroke="white" stroke-width="1.2" fill="none"/>
@@ -69,7 +68,6 @@
               </div>
             </div>
 
-            <!-- Two probability bars -->
             <div style="margin-top: 16px;">
               <div class="prob-row" style="margin-bottom: 12px;">
                 <div class="prob-team-row">
@@ -91,15 +89,16 @@
               </div>
             </div>
 
-            <!-- Two-line chart like Kalshi -->
             <div v-if="demoProbHistory.length > 1" style="margin-top: 24px;">
               <div class="section-label" style="margin-bottom: 10px;">Win probability · over by over</div>
               <div class="chart-legend">
-                <span class="legend-dot" style="background: #f5c518;"></span><span class="legend-label" style="color: #f5c518;">CSK</span>
-                <span class="legend-dot" style="background: #94a3b8; margin-left: 16px;"></span><span class="legend-label" style="color: #94a3b8;">GT</span>
+                <span class="legend-dot" :style="{ background: demoPhase === 'innings1' ? teamColor('Chennai Super Kings') : '#22c55e' }"></span>
+                <span class="legend-label" :style="{ color: demoPhase === 'innings1' ? teamColor('Chennai Super Kings') : '#22c55e' }">{{ demoPhase === 'innings1' ? 'CSK' : 'GT (chasing)' }}</span>
+                <span class="legend-dot" :style="{ background: demoPhase === 'innings1' ? teamColor('Gujarat Titans') : teamColor('Chennai Super Kings'), marginLeft: '16px' }"></span>
+                <span class="legend-label" :style="{ color: demoPhase === 'innings1' ? teamColor('Gujarat Titans') : teamColor('Chennai Super Kings') }">{{ demoPhase === 'innings1' ? 'GT' : 'CSK (defending)' }}</span>
               </div>
               <div style="position: relative; height: 200px;">
-                <canvas id="demo-chart" role="img" aria-label="Win probability chart showing both teams over time">Win probability chart</canvas>
+                <canvas id="demo-chart" role="img" aria-label="Win probability chart">Win probability chart</canvas>
               </div>
             </div>
           </div>
@@ -111,22 +110,17 @@
               <div>
                 <div class="team-short" :style="{ color: teamColor(match.teams[0]) }">{{ shortName(match.teams[0]) }}</div>
                 <div class="team-name syne">{{ match.teams[0] }}</div>
-                <div v-if="liveData[match.id]" class="team-role">
-                  {{ getLiveRole(match.id, match.teams[0]) }}
-                </div>
+                <div v-if="liveData[match.id]" class="team-role">{{ getLiveRole(match.id, match.teams[0]) }}</div>
               </div>
               <div class="vs-divider">VS</div>
               <div style="text-align: right;">
                 <div class="team-short" :style="{ color: teamColor(match.teams[1]) }">{{ shortName(match.teams[1]) }}</div>
                 <div class="team-name syne">{{ match.teams[1] }}</div>
-                <div v-if="liveData[match.id]" class="team-role">
-                  {{ getLiveRole(match.id, match.teams[1]) }}
-                </div>
+                <div v-if="liveData[match.id]" class="team-role">{{ getLiveRole(match.id, match.teams[1]) }}</div>
               </div>
             </div>
 
             <div v-if="liveData[match.id]">
-              <!-- Innings 1 -->
               <div v-if="liveData[match.id].status === 'innings1'">
                 <div class="innings-badge" style="border-color: #f5c518; color: #f5c518;">Innings 1 in progress</div>
                 <div class="stats-row" style="margin-top: 12px;">
@@ -165,7 +159,6 @@
                 </div>
               </div>
 
-              <!-- Innings 2 -->
               <div v-else-if="liveData[match.id].status === 'live'">
                 <div class="innings-badge" style="border-color: #22c55e; color: #22c55e;">Innings 2 · Chase</div>
                 <div class="stats-row" style="margin-top: 12px;">
@@ -193,7 +186,7 @@
                 <div v-if="probHistory[match.id] && probHistory[match.id].length > 1" style="margin-top: 24px;">
                   <div class="section-label" style="margin-bottom: 6px;">Win probability · over by over</div>
                   <div class="chart-legend">
-                    <span class="legend-dot" :style="{ background: '#22c55e' }"></span>
+                    <span class="legend-dot" style="background: #22c55e;"></span>
                     <span class="legend-label" style="color: #22c55e;">{{ liveData[match.id].chasing_team }}</span>
                     <span class="legend-dot" :style="{ background: teamColor(liveData[match.id].defending_team), marginLeft: '16px' }"></span>
                     <span class="legend-label" :style="{ color: teamColor(liveData[match.id].defending_team) }">{{ liveData[match.id].defending_team }}</span>
@@ -218,12 +211,12 @@
             <div class="match-teams-grid" style="margin-bottom: 20px;">
               <div>
                 <div class="team-short" :style="{ color: teamColor(nextMatch.teams[0]) }">{{ shortName(nextMatch.teams[0]) }}</div>
-                <div class="team-name syne" style="font-size: 22px;">{{ nextMatch.teams[0] }}</div>
+                <div class="team-name syne" style="font-size: 24px;">{{ nextMatch.teams[0] }}</div>
               </div>
               <div class="vs-divider">VS</div>
               <div style="text-align: right;">
                 <div class="team-short" :style="{ color: teamColor(nextMatch.teams[1]) }">{{ shortName(nextMatch.teams[1]) }}</div>
-                <div class="team-name syne" style="font-size: 22px;">{{ nextMatch.teams[1] }}</div>
+                <div class="team-name syne" style="font-size: 24px;">{{ nextMatch.teams[1] }}</div>
               </div>
             </div>
             <div class="match-meta">
@@ -240,19 +233,18 @@
             <div v-else-if="heroPrediction" style="margin-top: 20px;">
               <div class="prob-row" style="margin-bottom: 14px;">
                 <div class="prob-team-row">
-                  <span class="prob-team-label" style="font-size: 14px;">{{ heroPrediction.team_a }}</span>
-                  <span class="syne" style="font-size: 22px; font-weight: 700;" :style="{ color: teamColor(heroPrediction.team_a) }">{{ pct(heroPrediction.team_a_win_probability) }}</span>
+                  <span class="prob-team-label" style="font-size: 15px;">{{ heroPrediction.team_a }}</span>
+                  <span class="syne" style="font-size: 24px; font-weight: 700;" :style="{ color: teamColor(heroPrediction.team_a) }">{{ pct(heroPrediction.team_a_win_probability) }}</span>
                 </div>
                 <div class="prob-bar-bg"><div class="prob-bar-fill" :style="{ width: pct(heroPrediction.team_a_win_probability), background: teamColor(heroPrediction.team_a) }"></div></div>
               </div>
               <div class="prob-row">
                 <div class="prob-team-row">
-                  <span class="prob-team-label" style="font-size: 14px;">{{ heroPrediction.team_b }}</span>
-                  <span class="syne" style="font-size: 22px; font-weight: 700;" :style="{ color: teamColor(heroPrediction.team_b) }">{{ pct(heroPrediction.team_b_win_probability) }}</span>
+                  <span class="prob-team-label" style="font-size: 15px;">{{ heroPrediction.team_b }}</span>
+                  <span class="syne" style="font-size: 24px; font-weight: 700;" :style="{ color: teamColor(heroPrediction.team_b) }">{{ pct(heroPrediction.team_b_win_probability) }}</span>
                 </div>
                 <div class="prob-bar-bg"><div class="prob-bar-fill" :style="{ width: pct(heroPrediction.team_b_win_probability), background: teamColor(heroPrediction.team_b) }"></div></div>
               </div>
-              <div class="accuracy-note">Pre-match estimate · historical form, ELO & venue · ~48% accuracy</div>
             </div>
           </div>
         </div>
@@ -284,14 +276,14 @@
                   <div>
                     <div class="pred-team-row">
                       <span class="prob-team-label">{{ match.teams[0] }}</span>
-                      <span class="syne" style="font-size: 17px; font-weight: 700;" :style="{ color: teamColor(match.teams[0]) }">{{ pct(matchPredictions[match.id].team_a_win_probability) }}</span>
+                      <span class="syne" style="font-size: 18px; font-weight: 700;" :style="{ color: teamColor(match.teams[0]) }">{{ pct(matchPredictions[match.id].team_a_win_probability) }}</span>
                     </div>
                     <div class="prob-bar-bg"><div class="prob-bar-fill" :style="{ width: pct(matchPredictions[match.id].team_a_win_probability), background: teamColor(match.teams[0]) }"></div></div>
                   </div>
                   <div>
                     <div class="pred-team-row">
                       <span class="prob-team-label">{{ match.teams[1] }}</span>
-                      <span class="syne" style="font-size: 17px; font-weight: 700;" :style="{ color: teamColor(match.teams[1]) }">{{ pct(matchPredictions[match.id].team_b_win_probability) }}</span>
+                      <span class="syne" style="font-size: 18px; font-weight: 700;" :style="{ color: teamColor(match.teams[1]) }">{{ pct(matchPredictions[match.id].team_b_win_probability) }}</span>
                     </div>
                     <div class="prob-bar-bg"><div class="prob-bar-fill" :style="{ width: pct(matchPredictions[match.id].team_b_win_probability), background: teamColor(match.teams[1]) }"></div></div>
                   </div>
@@ -311,16 +303,16 @@
               @click="toggleMatchPrediction(match)">
               <div style="display:flex; justify-content:space-between; align-items:center;">
                 <div style="display:flex; gap:10px; align-items:center;">
-                  <span :style="{ color: teamColor(match.teams[0]) }" style="font-size:13px; font-weight:500;">{{ match.teams[0] }}</span>
-                  <span style="font-size:11px; color:#2a2a4a;">vs</span>
-                  <span :style="{ color: teamColor(match.teams[1]) }" style="font-size:13px; font-weight:500;">{{ match.teams[1] }}</span>
+                  <span :style="{ color: teamColor(match.teams[0]) }" style="font-size:14px; font-weight:500;">{{ match.teams[0] }}</span>
+                  <span style="font-size:12px; color:#2a2a4a;">vs</span>
+                  <span :style="{ color: teamColor(match.teams[1]) }" style="font-size:14px; font-weight:500;">{{ match.teams[1] }}</span>
                 </div>
-                <span style="font-size:11px; color:#3a3a5c;">{{ formatDate(match.date) }}</span>
+                <span style="font-size:12px; color:#3a3a5c;">{{ formatDate(match.date) }}</span>
               </div>
               <div v-if="matchPredictions[match.id]" style="margin-top:10px; display:flex; gap:16px;">
-                <span :style="{ color: teamColor(match.teams[0]) }" style="font-size:13px; font-weight:600;">{{ pct(matchPredictions[match.id].team_a_win_probability) }}</span>
+                <span :style="{ color: teamColor(match.teams[0]) }" style="font-size:14px; font-weight:600;">{{ pct(matchPredictions[match.id].team_a_win_probability) }}</span>
                 <span style="color:#2a2a4a;">·</span>
-                <span :style="{ color: teamColor(match.teams[1]) }" style="font-size:13px; font-weight:600;">{{ pct(matchPredictions[match.id].team_b_win_probability) }}</span>
+                <span :style="{ color: teamColor(match.teams[1]) }" style="font-size:14px; font-weight:600;">{{ pct(matchPredictions[match.id].team_b_win_probability) }}</span>
               </div>
             </div>
           </div>
@@ -335,16 +327,16 @@
         <div class="section-label">Completed Matches</div>
         <div style="display: flex; flex-direction: column; gap: 8px;">
           <div v-for="match in completedMatches" :key="match.id" class="result-card">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
               <div style="display:flex; gap:10px; align-items:center;">
-                <span :style="{ color: teamColor(match.teams[0]) }" style="font-size:14px; font-weight:500;">{{ match.teams[0] }}</span>
-                <span style="font-size:11px; color:#2a2a4a;">vs</span>
-                <span :style="{ color: teamColor(match.teams[1]) }" style="font-size:14px; font-weight:500;">{{ match.teams[1] }}</span>
+                <span :style="{ color: teamColor(match.teams[0]) }" style="font-size:15px; font-weight:600;">{{ match.teams[0] }}</span>
+                <span style="font-size:12px; color:#2a2a4a;">vs</span>
+                <span :style="{ color: teamColor(match.teams[1]) }" style="font-size:15px; font-weight:600;">{{ match.teams[1] }}</span>
               </div>
-              <span style="font-size:11px; color:#3a3a5c;">{{ formatDate(match.date) }}</span>
+              <span style="font-size:12px; color:#3a3a5c;">{{ formatDate(match.date) }}</span>
             </div>
-            <div style="font-size:13px; color:#7a7a9a;">{{ match.match_status }}</div>
-            <div style="font-size:11px; color:#2a2a4a; margin-top:4px;">{{ shortVenue(match.venue) }}</div>
+            <div style="font-size:14px; color:#8a8aaa;">{{ match.match_status }}</div>
+            <div style="font-size:12px; color:#3a3a5c; margin-top:4px;">{{ shortVenue(match.venue) }}</div>
           </div>
         </div>
       </div>
@@ -373,7 +365,7 @@ const demoProbPct = ref(50)
 const demoStats = ref([])
 const demoPhase = ref('innings1')
 const charts = {}
-let matchListInterval = null
+let matchListTimeout = null
 let livePollingInterval = null
 let demoInterval = null
 
@@ -404,56 +396,53 @@ function shortName(team) { return TEAM_SHORT[team] || team.split(' ').map(w => w
 function pct(v) { return (v * 100).toFixed(0) + '%' }
 
 function formatDate(dateStr) {
-  const d = new Date(dateStr)
+  const d = new Date(dateStr + 'Z')
   return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) + ', ' +
     d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })
 }
 
 function timeUntilMatch(dateStr) {
-  const diff = new Date(dateStr) - new Date()
+  const diff = new Date(dateStr + 'Z') - new Date()
   if (diff < 0) return 'Started'
   const h = Math.floor(diff / 3600000)
   const m = Math.floor((diff % 3600000) / 60000)
-  if (h > 24) return `${Math.floor(h/24)}d away`
+  if (h > 24) return `${Math.floor(h / 24)}d away`
   if (h > 0) return `${h}h ${m}m away`
   return `${m}m away`
 }
 
 function shortVenue(venue) { return venue ? venue.split(',')[0] : '' }
-function isToday(dateStr) { return new Date(dateStr).toDateString() === new Date().toDateString() }
-function daysFromNow(dateStr) { return (new Date(dateStr) - new Date()) / (1000 * 60 * 60 * 24) }
-function minsUntil(dateStr) { return (new Date(dateStr) - new Date()) / 60000 }
+function isToday(dateStr) { return new Date(dateStr + 'Z').toDateString() === new Date().toDateString() }
+function daysFromNow(dateStr) { return (new Date(dateStr + 'Z') - new Date()) / (1000 * 60 * 60 * 24) }
+function minsUntil(dateStr) { return (new Date(dateStr + 'Z') - new Date()) / 60000 }
 
 function getLiveRole(matchId, team) {
   const d = liveData[matchId]
   if (!d) return ''
-  if (d.status === 'innings1') {
-    return team === d.batting_team ? 'Batting' : 'Bowling'
-  }
-  if (d.status === 'live') {
-    return team === d.chasing_team ? 'Chasing' : 'Defending'
-  }
+  if (d.status === 'innings1') return team === d.batting_team ? 'Batting' : 'Bowling'
+  if (d.status === 'live') return team === d.chasing_team ? 'Chasing' : 'Defending'
   return ''
 }
 
 function liveStats(matchId) {
   const s = liveData[matchId]?.match_state
   if (!s) return {}
+  const need = s.runs_required <= 0 ? 'Won!' : `${s.runs_required} (${Math.floor(s.balls_remaining / 6)}.${s.balls_remaining % 6} ov)`
   return {
     'Target': s.target,
-    'Need': `${s.runs_required} (${Math.floor(s.balls_remaining/6)}.${s.balls_remaining%6} ov)`,
+    'Need': need,
     'Wkts': s.wickets_remaining,
     'CRR': s.current_run_rate,
-    'RRR': s.required_run_rate,
+    'RRR': s.runs_required <= 0 ? '—' : s.required_run_rate,
   }
 }
 
 const liveMatches = computed(() => matches.value.filter(m => m.status === 'live'))
-const upcomingMatches = computed(() => [...matches.value].filter(m => m.status === 'upcoming').sort((a,b) => new Date(a.date)-new Date(b.date)))
+const upcomingMatches = computed(() => [...matches.value].filter(m => m.status === 'upcoming').sort((a, b) => new Date(a.date + 'Z') - new Date(b.date + 'Z')))
 const nextMatch = computed(() => upcomingMatches.value[0] || null)
 const weekMatches = computed(() => upcomingMatches.value.slice(1).filter(m => daysFromNow(m.date) <= 7))
 const laterMatches = computed(() => upcomingMatches.value.slice(1).filter(m => daysFromNow(m.date) > 7))
-const completedMatches = computed(() => [...matches.value].filter(m => m.status === 'completed').sort((a,b) => new Date(b.date)-new Date(a.date)))
+const completedMatches = computed(() => [...matches.value].filter(m => m.status === 'completed').sort((a, b) => new Date(b.date + 'Z') - new Date(a.date + 'Z')))
 
 async function fetchMatches() {
   try {
@@ -463,30 +452,30 @@ async function fetchMatches() {
     if (data.series_name) seriesName.value = data.series_name
     apiCallsToday.value = data.api_calls_today || 0
 
-    // Start live polling if matches are live
     const live = matches.value.filter(m => m.status === 'live')
     if (live.length && !livePollingInterval) {
       live.forEach(m => fetchLivePrediction(m.id))
       livePollingInterval = setInterval(() => {
         matches.value.filter(m => m.status === 'live').forEach(m => fetchLivePrediction(m.id))
-      }, 30000)
+      }, 180000)
+    }
+    if (!live.length && livePollingInterval) {
+      clearInterval(livePollingInterval)
+      livePollingInterval = null
     }
   } catch (e) { console.error(e) }
   loadingMatches.value = false
 }
 
-// Smart polling: check match list every 5 mins normally,
-// but every 60s when a match is starting within 30 minutes
 function scheduleMatchListPolling() {
-  const checkAndReschedule = () => {
+  const tick = () => {
     fetchMatches()
-    const upcoming = matches.value.filter(m => m.status === 'upcoming')
-    const soonest = upcoming.sort((a,b) => new Date(a.date)-new Date(b.date))[0]
-    const mins = soonest ? minsUntil(soonest.date) : 9999
-    const interval = (mins < 30 && mins > -10) ? 60000 : 300000
-    matchListInterval = setTimeout(checkAndReschedule, interval)
+    const upcoming = [...matches.value].filter(m => m.status === 'upcoming').sort((a, b) => new Date(a.date + 'Z') - new Date(b.date + 'Z'))
+    const mins = upcoming.length ? minsUntil(upcoming[0].date) : 9999
+    const interval = (mins < 30 && mins > -30) ? 60000 : 300000
+    matchListTimeout = setTimeout(tick, interval)
   }
-  matchListInterval = setTimeout(checkAndReschedule, 60000)
+  matchListTimeout = setTimeout(tick, 60000)
 }
 
 async function fetchLivePrediction(matchId) {
@@ -497,20 +486,19 @@ async function fetchLivePrediction(matchId) {
 
     if (data.status === 'live' || data.status === 'innings1') {
       if (!probHistory[matchId]) probHistory[matchId] = []
-      const overs = data.status === 'live' ? data.match_state.overs_done : data.match_state.overs_done
+      const overs = data.match_state.overs_done
       const prob = data.status === 'live' ? data.chasing_win_probability : data.batting_win_probability
       const last = probHistory[matchId].slice(-1)[0]
       if (!last || last.overs !== overs) {
         probHistory[matchId].push({ overs, prob })
-        const color1 = data.status === 'live' ? '#22c55e' : teamColor(data.batting_team)
-        const color2 = data.status === 'live' ? teamColor(data.defending_team) : teamColor(data.bowling_team)
+        const c1 = data.status === 'live' ? '#22c55e' : teamColor(data.batting_team)
+        const c2 = data.status === 'live' ? teamColor(data.defending_team) : teamColor(data.bowling_team)
         await nextTick()
-        renderTwoLineChart('chart-' + matchId, probHistory[matchId], color1, color2)
+        renderTwoLineChart('chart-' + matchId, probHistory[matchId], c1, c2)
       }
     }
 
-    // If match ended, stop polling
-    if (data.status === 'ended' && livePollingInterval) {
+    if (data.status === 'ended') {
       clearInterval(livePollingInterval)
       livePollingInterval = null
       fetchMatches()
@@ -544,27 +532,29 @@ async function toggleMatchPrediction(match) {
   loadingPredictions[match.id] = false
 }
 
-// Demo mode with innings 1 → innings 2 transition
 function startDemo() {
   demoMode.value = true
   demoProbHistory.value = []
   demoPhase.value = 'innings1'
   let over = 0
 
-  // Innings 1: CSK batting — probability swings based on scoring rate
-  const inn1Script = [52,55,58,54,50,48,45,60,65,68,62,57,63,67,65,70,74,76,72,75]
-  // Innings 2: GT chasing
-  const inn2Script = [42,45,48,44,40,38,35,52,58,62,60,55,65,70,68,72,75,80,85,90]
+  const inn1Script = [52, 55, 58, 54, 50, 48, 45, 60, 65, 68, 62, 57, 63, 67, 65, 70, 74, 76, 72, 75]
+  const inn2Script = [42, 45, 48, 44, 40, 38, 35, 52, 58, 62, 60, 55, 65, 70, 68, 72, 75, 80, 85, 90]
 
-  const inn1Stats = (o) => ({ label: 'Innings 1', runs: Math.round(8.5 * o), wickets: Math.min(9, Math.floor(o/4)), crr: 8.5, proj: 170 })
   const inn2Stats = [
-    {target:175,runs:12,wickets:9,crr:7.2,rrr:9.1},{target:175,runs:28,wickets:9,crr:8.4,rrr:9.4},
-    {target:175,runs:44,wickets:8,crr:8.8,rrr:9.5},{target:175,runs:58,wickets:8,crr:8.3,rrr:9.8},
-    {target:175,runs:71,wickets:7,crr:8.1,rrr:10.2},{target:175,runs:85,wickets:7,crr:8.5,rrr:10.0},
-    {target:175,runs:102,wickets:7,crr:8.5,rrr:9.75},{target:175,runs:122,wickets:7,crr:9.4,rrr:9.5},
-    {target:175,runs:140,wickets:7,crr:9.3,rrr:9.0},{target:175,runs:155,wickets:7,crr:9.4,rrr:8.3},
-    {target:175,runs:162,wickets:7,crr:9.0,rrr:7.8},{target:175,runs:168,wickets:6,crr:9.1,rrr:7.5},
-    {target:175,runs:175,wickets:6,crr:9.2,rrr:0},{target:175,runs:175,wickets:6,crr:9.2,rrr:0},
+    { target: 175, runs: 12, wickets: 9, crr: 7.2, rrr: 9.1 },
+    { target: 175, runs: 28, wickets: 9, crr: 8.4, rrr: 9.4 },
+    { target: 175, runs: 44, wickets: 8, crr: 8.8, rrr: 9.5 },
+    { target: 175, runs: 58, wickets: 8, crr: 8.3, rrr: 9.8 },
+    { target: 175, runs: 71, wickets: 7, crr: 8.1, rrr: 10.2 },
+    { target: 175, runs: 85, wickets: 7, crr: 8.5, rrr: 10.0 },
+    { target: 175, runs: 102, wickets: 7, crr: 8.5, rrr: 9.75 },
+    { target: 175, runs: 122, wickets: 7, crr: 9.4, rrr: 9.5 },
+    { target: 175, runs: 140, wickets: 7, crr: 9.3, rrr: 9.0 },
+    { target: 175, runs: 155, wickets: 7, crr: 9.4, rrr: 8.3 },
+    { target: 175, runs: 162, wickets: 7, crr: 9.0, rrr: 7.8 },
+    { target: 175, runs: 168, wickets: 6, crr: 9.1, rrr: 7.5 },
+    { target: 175, runs: 175, wickets: 6, crr: 9.2, rrr: 0 },
   ]
 
   const tick = () => {
@@ -572,42 +562,59 @@ function startDemo() {
       // Innings 1
       demoPhase.value = 'innings1'
       const prob = inn1Script[over]
-      const s = inn1Stats(over + 1)
+      const runs = Math.round(8.5 * (over + 1))
+      const wickets = Math.min(9, Math.floor((over + 1) / 4))
       demoProbPct.value = prob
-      demoProbHistory.value = [...demoProbHistory.value, { overs: over + 1, prob: prob / 100, phase: 'innings1' }]
+      demoProbHistory.value = [...demoProbHistory.value, { overs: over + 1, prob: prob / 100 }]
       demoStats.value = [
-        { label: 'Score', value: `${s.runs}/${s.wickets}` },
+        { label: 'Score', value: `${runs}/${wickets}` },
         { label: 'Overs', value: over + 1 },
-        { label: 'CRR', value: s.crr.toFixed(1) },
-        { label: 'Projected', value: s.proj },
+        { label: 'CRR', value: '8.5' },
+        { label: 'Projected', value: 170 },
       ]
+      nextTick(() => renderTwoLineChart('demo-chart', demoProbHistory.value, teamColor('Chennai Super Kings'), teamColor('Gujarat Titans')))
+      over++
     } else {
-      // Innings 2
-      demoPhase.value = 'innings2'
+      // Transition: reset chart for innings 2
+      if (over === 20) {
+        if (charts['demo-chart']) {
+          charts['demo-chart'].destroy()
+          delete charts['demo-chart']
+        }
+        demoProbHistory.value = []
+        demoPhase.value = 'innings2'
+      }
+
       const i = over - 20
       if (i >= inn2Script.length) { stopDemo(); return }
+
       const prob = inn2Script[i]
-      const s = inn2Stats[Math.min(i, inn2Stats.length-1)]
+      const s = inn2Stats[Math.min(i, inn2Stats.length - 1)]
+
+      // Stop demo when chase is complete
+      if (s.runs >= s.target) { stopDemo(); return }
+
       demoProbPct.value = prob
-      demoProbHistory.value = [...demoProbHistory.value, { overs: i + 1, prob: prob / 100, phase: 'innings2' }]
+      demoProbHistory.value = [...demoProbHistory.value, { overs: i + 1, prob: prob / 100 }]
       demoStats.value = [
         { label: 'Target', value: s.target },
-        { label: 'Need', value: `${s.target - s.runs} (${20-i-1} ov)` },
+        { label: 'Need', value: s.runs >= s.target ? 'Won!' : `${s.target - s.runs} (${20 - i - 1} ov)` },
         { label: 'Wkts', value: s.wickets },
         { label: 'CRR', value: s.crr.toFixed(1) },
-        { label: 'RRR', value: s.rrr.toFixed(1) },
+        { label: 'RRR', value: s.runs >= s.target ? '—' : s.rrr.toFixed(1) },
       ]
+      nextTick(() => renderTwoLineChart('demo-chart', demoProbHistory.value, '#22c55e', teamColor('Chennai Super Kings')))
+      over++
     }
-    over++
-    nextTick(() => renderTwoLineChart('demo-chart', demoProbHistory.value, teamColor('Chennai Super Kings'), teamColor('Gujarat Titans')))
   }
+
   tick()
   demoInterval = setInterval(tick, 1800)
 }
 
 function stopDemo() {
   demoMode.value = false
-  if (demoInterval) clearInterval(demoInterval)
+  if (demoInterval) { clearInterval(demoInterval); demoInterval = null }
   if (charts['demo-chart']) { charts['demo-chart'].destroy(); delete charts['demo-chart'] }
   demoProbHistory.value = []
 }
@@ -617,7 +624,7 @@ function renderTwoLineChart(canvasId, history, color1, color2) {
   const canvas = document.getElementById(canvasId)
   if (!canvas || !window.Chart) return
 
-  const labels = history.map((h, i) => `${h.overs}`)
+  const labels = history.map(h => `${h.overs}`)
   const data1 = history.map(h => parseFloat((h.prob * 100).toFixed(1)))
   const data2 = history.map(h => parseFloat(((1 - h.prob) * 100).toFixed(1)))
 
@@ -677,10 +684,7 @@ function renderTwoLineChart(canvasId, history, color1, color2) {
           padding: 10,
           callbacks: {
             title: ctx => `Over ${ctx[0].label}`,
-            label: ctx => {
-              const name = ctx.datasetIndex === 0 ? 'Team 1' : 'Team 2'
-              return `  ${name}: ${ctx.parsed.y}%`
-            }
+            label: ctx => `  ${ctx.datasetIndex === 0 ? 'Team 1' : 'Team 2'}: ${ctx.parsed.y}%`
           }
         }
       },
@@ -709,7 +713,7 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
-  if (matchListInterval) clearTimeout(matchListInterval)
+  if (matchListTimeout) clearTimeout(matchListTimeout)
   if (livePollingInterval) clearInterval(livePollingInterval)
   if (demoInterval) clearInterval(demoInterval)
   Object.values(charts).forEach(c => c.destroy())
@@ -720,7 +724,6 @@ onUnmounted(() => {
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
 #app { background: #080810; min-height: 100vh; font-family: 'IBM Plex Mono', monospace; color: #e8e4f0; }
 .syne { font-family: 'Syne', sans-serif; }
 
@@ -739,7 +742,6 @@ onUnmounted(() => {
 .demo-btn { background: #0f0f1e; border: 1.5px solid #2a2a4e; color: #7c3aed; padding: 8px 16px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; cursor: pointer; border-radius: 4px; text-transform: uppercase; transition: all 0.2s; }
 .demo-btn:hover { background: #1a1a2e; }
 .demo-btn-active { border-color: #22c55e; color: #22c55e; }
-
 .api-warning { font-size: 10px; color: #f97316; border: 1px solid #f9731644; padding: 4px 8px; border-radius: 4px; }
 
 .main-content { max-width: 820px; margin: 0 auto; padding: 36px 24px; }
@@ -749,7 +751,7 @@ onUnmounted(() => {
 .section-header-live { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
 
 .live-pulse { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #22c55e; animation: pulse 1.5s infinite; }
-@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(1.3)} }
+@keyframes pulse { 0%,100% { opacity:1; transform:scale(1) } 50% { opacity:.6; transform:scale(1.3) } }
 
 .live-card { border: 1.5px solid #1a3a2a; background: #090f0d; border-radius: 12px; padding: 28px; position: relative; overflow: hidden; }
 .live-accent { position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: #22c55e; border-radius: 4px 0 0 4px; }
@@ -760,9 +762,9 @@ onUnmounted(() => {
 .innings-badge { display: inline-block; border: 1px solid; border-radius: 4px; padding: 3px 10px; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; }
 
 .match-teams-grid { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; margin-bottom: 24px; }
-.team-short { font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px; }
+.team-short { font-size: 12px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px; }
 .team-name { font-size: 20px; font-weight: 700; color: #e8e4f0; line-height: 1.2; }
-.team-role { font-size: 12px; color: #3a3a5c; margin-top: 4px; }
+.team-role { font-size: 13px; color: #3a3a5c; margin-top: 4px; }
 .vs-divider { text-align: center; font-size: 11px; color: #2a2a4a; letter-spacing: 0.2em; }
 
 .stats-row { display: flex; gap: 10px; flex-wrap: wrap; }
@@ -772,22 +774,21 @@ onUnmounted(() => {
 
 .prob-bar-bg { height: 5px; background: #14141e; border-radius: 3px; overflow: hidden; margin-top: 6px; }
 .prob-bar-fill { height: 100%; border-radius: 3px; transition: width 0.8s cubic-bezier(.4,0,.2,1); }
-.prob-team-label { font-size: 13px; color: #aaa; }
+.prob-team-label { font-size: 14px; color: #aaa; }
 .prob-pct { font-size: 20px; font-weight: 700; }
 .prob-team-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
 
 .chart-legend { display: flex; align-items: center; margin-bottom: 10px; }
 .legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-.legend-label { font-size: 11px; margin-left: 6px; }
+.legend-label { font-size: 12px; margin-left: 6px; }
 
-.match-meta { display: flex; gap: 12px; font-size: 12px; color: #4a4a6a; margin-bottom: 4px; }
+.match-meta { display: flex; gap: 12px; font-size: 13px; color: #4a4a6a; margin-bottom: 4px; flex-wrap: wrap; }
 .meta-dot { color: #2a2a4a; }
 
-.predict-btn { border: none; padding: 12px 24px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; font-weight: 500; border-radius: 6px; color: #080810; transition: all 0.2s; }
+.predict-btn { border: none; padding: 12px 24px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; font-weight: 500; border-radius: 6px; color: #080810; transition: all 0.2s; }
 .predict-btn:hover { transform: translateY(-1px); filter: brightness(1.1); }
 
-.computing-text { font-size: 12px; color: #3a3a5c; letter-spacing: 0.1em; margin-top: 16px; }
-.accuracy-note { font-size: 10px; color: #2a2a4a; letter-spacing: 0.05em; margin-top: 14px; }
+.computing-text { font-size: 13px; color: #3a3a5c; letter-spacing: 0.1em; margin-top: 16px; }
 .waiting-text { font-size: 13px; color: #3a5a4a; }
 
 .match-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 40px; }
@@ -796,16 +797,17 @@ onUnmounted(() => {
 .match-card-top { display: flex; justify-content: space-between; align-items: center; }
 .match-card-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
 .team-chips { display: flex; align-items: center; gap: 8px; }
-.team-chip { border: 1px solid; border-radius: 20px; padding: 3px 10px; font-size: 12px; font-weight: 500; }
-.vs-small { font-size: 11px; color: #3a3a5c; }
-.match-date { font-size: 12px; color: #4a4a6a; }
-.venue-text { font-size: 12px; color: #3a3a5c; }
-.tap-hint { font-size: 11px; color: #2a2a4a; }
-.loading-small { font-size: 11px; color: #3a3a5c; letter-spacing: 0.08em; }
+.team-chip { border: 1px solid; border-radius: 20px; padding: 4px 12px; font-size: 13px; font-weight: 500; }
+.vs-small { font-size: 12px; color: #3a3a5c; }
+.match-date { font-size: 13px; color: #4a4a6a; }
+.venue-text { font-size: 13px; color: #3a3a5c; }
+.tap-hint { font-size: 13px; color: #4a4a6a; }
+.loading-small { font-size: 12px; color: #3a3a5c; letter-spacing: 0.08em; }
+
 .inline-prediction { margin-top: 16px; padding-top: 16px; border-top: 1px solid #14141e; }
 .prediction-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .pred-team-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
 
 .later-card { border: 1.5px solid #10101a; background: #090912; border-radius: 8px; padding: 14px 20px; cursor: pointer; transition: border-color 0.2s; }
-.result-card { border: 1.5px solid #12121c; background: #0a0a14; border-radius: 8px; padding: 16px 20px; }
+.result-card { border: 1.5px solid #12121c; background: #0a0a14; border-radius: 8px; padding: 18px 22px; }
 </style>
